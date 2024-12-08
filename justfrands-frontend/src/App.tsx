@@ -3,7 +3,9 @@ import EditorPage from './pages/EditorPage';
 
 function App() {
   return (
-    <EditorPage />
+    <div className='w-full border-2'>
+      <EditorPage />
+    </div>
   );
 }
 export default App
