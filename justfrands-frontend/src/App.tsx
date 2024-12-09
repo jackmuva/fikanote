@@ -3,7 +3,7 @@ import EditorPage from './pages/EditorPage';
 
 function App() {
   return (
-    <div className='w-full border-2'>
+    <div className='absolute left-0 w-screen flex justify-center'>
       <EditorPage />
     </div>
   );

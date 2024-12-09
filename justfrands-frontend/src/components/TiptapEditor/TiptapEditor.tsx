@@ -1,8 +1,10 @@
 import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import Paragraph from '@tiptap/extension-paragraph';
+import Document from '@tiptap/extension-document';
+import Text from '@tiptap/extension-text';
 
 // define your extension array
-const extensions = [StarterKit]
+const extensions = [Document, Paragraph, Text]
 
 const content = '<p>Hello World!</p>'
 
