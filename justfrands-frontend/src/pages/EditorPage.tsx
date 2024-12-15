@@ -3,7 +3,7 @@ import TiptapEditor from "../components/TiptapEditor/TiptapEditor";
 export default function EditorPage() {
 
   return (
-    <div className="w-full md:w-2/3 flex justify-center border-2">
+    <div className="w-11/12 md:w-1/2 flex justify-center h-svh ">
       <TiptapEditor></TiptapEditor>
     </div>
   );

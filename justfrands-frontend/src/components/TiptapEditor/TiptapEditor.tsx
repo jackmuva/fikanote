@@ -1,4 +1,4 @@
-import { useEditor, EditorContent, FloatingMenu, BubbleMenu } from '@tiptap/react'
+import { useEditor, EditorContent } from '@tiptap/react'
 import Paragraph from '@tiptap/extension-paragraph';
 import Document from '@tiptap/extension-document';
 import Text from '@tiptap/extension-text';
@@ -9,6 +9,7 @@ import ListItem from '@tiptap/extension-list-item';
 import CodeBlock from '@tiptap/extension-code-block';
 import Heading from '@tiptap/extension-heading';
 import StarterKit from '@tiptap/starter-kit';
+import { TiptapFloatingMenu } from './TiptapFloatingMenu';
 
 // define your extension array
 const extensions = [StarterKit, Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }),
@@ -29,10 +30,10 @@ const TiptapEditor = () => {
 	})
 
 	return (
-		<div>
+		<div className={"w-full h-full bg-stone-100 text-left text-black p-4 rounded-lg"}>
 			<EditorContent editor={editor} />
-			<FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
-			<BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>
+			<TiptapFloatingMenu editor={editor}></TiptapFloatingMenu>
+			{/* <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu> */}
 		</div>
 	);
 }
