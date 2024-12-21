@@ -33,36 +33,36 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 						className={editor.isActive('heading', { level: 1 }) ? 'font-bold bg-purple-100 border-2 border-purple-700' : ''}
 					>
-						H1
+						&lt;h1&gt;
 					</button>
 					<button
 						onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
 						className={editor.isActive('heading', { level: 2 }) ? 'font-bold bg-purple-100 border-2 border-purple-700' : ''}
 					>
-						H2
+						&lt;h2&gt;
 					</button>
 					<button
 						onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
 						className={editor.isActive('heading', { level: 3 }) ? 'font-bold bg-purple-100 border-2 border-purple-700' : ''}
 					>
-						H3
+						&lt;h3&gt;
 					</button>
 
 					<button
 						onClick={() => editor.chain().focus().toggleBulletList().run()}
 						className={editor.isActive('bulletList') ? 'font-bold bg-purple-100 border-2 border-purple-700' : ''}
 					>
-						list
+						&lt;ul&gt;
 					</button>
 					<button
 						onClick={editor.isActive('codeBlock') ? () => editor.chain().focus().toggleCodeBlock().run()
 							: () => editor.chain().focus().setCodeBlock().run()}
 						className={editor.isActive('codeBlock') ? 'font-bold bg-purple-100 border-2 border-purple-700' : ''}
 					>
-						code
+						&lt;code&gt;
 					</button>
 					<input type="file" id="file" style={{ display: 'none' }} ref={inputFile} accept="image/*" onChange={handleFile} />
-					<button onClick={uploadFile}> Image </button>
+					<button onClick={uploadFile}> &lt;img&gt; </button>
 				</div>}
 		</div>
 	);

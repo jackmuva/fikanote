@@ -6,16 +6,18 @@ import Image from '@tiptap/extension-image';
 import Youtube from '@tiptap/extension-youtube';
 import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
-import CodeBlock from '@tiptap/extension-code-block';
 import Heading from '@tiptap/extension-heading';
-import StarterKit from '@tiptap/starter-kit';
 import { TiptapMenu } from './TiptapMenu';
 import { TiptapBubbleMenu } from './TiptapBubbleMenu';
 import FileHandler from '@tiptap-pro/extension-file-handler';
+import { all, createLowlight } from 'lowlight';
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+
+const lowlight = createLowlight(all);
 
 // define your extension array
 const extensions = [Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }),
-	Text, Image, Youtube, BulletList, ListItem, CodeBlock,
+	Text, Image, Youtube, BulletList, ListItem,
 	FileHandler.configure({
 		allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
 		onDrop: (currentEditor, files, pos) => {
@@ -55,7 +57,8 @@ const extensions = [Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }
 				}
 			})
 		},
-	})
+	}),
+	CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'ts' })
 ];
 
 const content = `<h2>Start Typing to Begin</h2>
