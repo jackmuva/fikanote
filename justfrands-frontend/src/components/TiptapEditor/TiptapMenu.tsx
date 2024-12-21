@@ -1,6 +1,28 @@
 import { Editor } from '@tiptap/react'
+import { useRef } from 'react';
 
 export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
+
+	const inputFile = useRef<HTMLInputElement | null>(null);
+
+	const uploadFile = () => {
+		inputFile.current?.click();
+	}
+
+	const handleFile = (event: any) => {
+		const file = event.target.files[0];
+		const fileReader = new FileReader();
+
+		fileReader.readAsDataURL(file)
+		fileReader.onload = () => {
+			editor?.chain().insertContentAt(editor.state.selection.anchor, {
+				type: 'image',
+				attrs: {
+					src: fileReader.result,
+				},
+			}).focus().run()
+		}
+	}
 
 	return (
 		<div className='bg-white z-10 py-2 px-2 rounded-lg 
@@ -39,6 +61,8 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 					>
 						code
 					</button>
+					<input type="file" id="file" style={{ display: 'none' }} ref={inputFile} accept="image/*" onChange={handleFile} />
+					<button onClick={uploadFile}> Image </button>
 				</div>}
 		</div>
 	);

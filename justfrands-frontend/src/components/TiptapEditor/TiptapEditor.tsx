@@ -14,7 +14,7 @@ import { TiptapBubbleMenu } from './TiptapBubbleMenu';
 import FileHandler from '@tiptap-pro/extension-file-handler';
 
 // define your extension array
-const extensions = [StarterKit, Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }),
+const extensions = [Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }),
 	Text, Image, Youtube, BulletList, ListItem, CodeBlock,
 	FileHandler.configure({
 		allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
@@ -58,7 +58,13 @@ const extensions = [StarterKit, Document, Paragraph, Heading.configure({ levels:
 	})
 ];
 
-const content = `<h2>Start Typing to Begin</h2>`
+const content = `<h2>Start Typing to Begin</h2>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>
+		<p></p>`
 
 
 const TiptapEditor = () => {
