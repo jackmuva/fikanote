@@ -13,11 +13,13 @@ import FileHandler from '@tiptap-pro/extension-file-handler';
 import { all, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { useEffect } from 'react';
+import Bold from '@tiptap/extension-bold';
+import Italic from '@tiptap/extension-italic';
 
 const lowlight = createLowlight(all);
 
 // define your extension array
-const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem,
+const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic,
 	Image.configure({
 		allowBase64: true,
 		inline: true

@@ -11,11 +11,13 @@
   },
   "dependencies": {
     "@tiptap-pro/extension-file-handler": "^2.16.3",
+    "@tiptap/extension-bold": "^2.10.4",
     "@tiptap/extension-bullet-list": "^2.10.3",
     "@tiptap/extension-code-block": "^2.10.3",
     "@tiptap/extension-code-block-lowlight": "^2.10.4",
     "@tiptap/extension-document": "^2.10.3",
     "@tiptap/extension-image": "^2.10.3",
+    "@tiptap/extension-italic": "^2.10.4",
     "@tiptap/extension-list-item": "^2.10.3",
     "@tiptap/extension-paragraph": "^2.10.3",
     "@tiptap/extension-text": "^2.10.3",
