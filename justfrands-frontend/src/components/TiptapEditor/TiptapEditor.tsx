@@ -12,12 +12,17 @@ import { TiptapBubbleMenu } from './TiptapBubbleMenu';
 import FileHandler from '@tiptap-pro/extension-file-handler';
 import { all, createLowlight } from 'lowlight';
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
+import { useEffect } from 'react';
 
 const lowlight = createLowlight(all);
 
 // define your extension array
-const extensions = [Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }),
-	Text, Image, Youtube, BulletList, ListItem,
+const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem,
+	Image.configure({
+		allowBase64: true,
+		inline: true
+	}),
+	Heading.configure({ levels: [1, 2, 3] }),
 	FileHandler.configure({
 		allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
 		onDrop: (currentEditor, files, pos) => {
@@ -61,16 +66,15 @@ const extensions = [Document, Paragraph, Heading.configure({ levels: [1, 2, 3] }
 	CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'ts' })
 ];
 
-const content = `<h2>Start Typing to Begin</h2>
-		<p></p>
-		<p></p>
-		<p></p>
-		<p></p>
-		<p></p>
-		<p></p>`
-
 
 const TiptapEditor = () => {
+	const content = `<h2>Start Typing to Begin</h2>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>
+					<p></p>`
 	const editor = useEditor({
 		extensions,
 		content,
@@ -78,13 +82,25 @@ const TiptapEditor = () => {
 			attributes: {
 				class: 'focus:outline-none',
 			},
-		}
+		},
+		onUpdate({ editor }) {
+			console.log(editor.getHTML());
+			localStorage.setItem("content", editor.getHTML());
+		},
 	});
+
+	useEffect(() => {
+		console.log("initial", localStorage.getItem("content"));
+		if (localStorage.getItem("content")) {
+			const savedContent = localStorage.getItem("content") ?? content;
+			editor?.commands.setContent(savedContent);
+		}
+	}, []);
 
 	return (
 		<div className={"w-full h-full text-left text-black "}>
 			<TiptapMenu editor={editor}></TiptapMenu>
-			<EditorContent className='bg-stone-100 p-4 rounded-lg mt-8 h-96' editor={editor} />
+			<EditorContent className='bg-stone-100 p-4 rounded-lg mt-8 h-fit min-h-96' editor={editor} />
 			<TiptapBubbleMenu editor={editor} />
 		</div>
 	);
