@@ -3,7 +3,7 @@ import EditorPage from './pages/EditorPage';
 
 function App() {
   return (
-    <div className='py-20 absolute top-0 left-0 w-screen flex flex-col justify-start items-center'>
+    <div className='py-10 absolute top-0 left-0 w-screen flex flex-col justify-start items-center'>
       <EditorPage />
     </div>
   );
