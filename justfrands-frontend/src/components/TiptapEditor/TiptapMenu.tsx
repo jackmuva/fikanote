@@ -25,6 +25,14 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	}
 
 	const sendDocument = () => { };
+	const saveHtml = async () => {
+		const rawHtml = editor?.getHTML();
+		var file = new Blob([rawHtml ?? ""], { type: "text/html" });
+		const handle = await showSaveFilePicker({ suggestedName: "just-frands.html" });
+		const writer = await handle.createWritable();
+		await writer.write(file);
+		await writer.close();
+	}
 	const redirectToAccount = () => { };
 
 	return (
@@ -79,7 +87,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Send Page
 						</button>
-						<button onClick={sendDocument}
+						<button onClick={saveHtml}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Save Page
 						</button>
