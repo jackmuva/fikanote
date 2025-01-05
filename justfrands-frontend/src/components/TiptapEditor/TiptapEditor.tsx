@@ -15,11 +15,12 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight';
 import { useEffect } from 'react';
 import Bold from '@tiptap/extension-bold';
 import Italic from '@tiptap/extension-italic';
+import ImageResize from 'tiptap-extension-resize-image';
 
 const lowlight = createLowlight(all);
 
 // define your extension array
-const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic,
+const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic, ImageResize,
 	Image.configure({
 		allowBase64: true,
 		inline: true

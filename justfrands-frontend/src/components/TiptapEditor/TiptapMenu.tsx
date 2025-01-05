@@ -3,13 +3,13 @@ import { useRef } from 'react';
 
 export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 
-	const inputFile = useRef<HTMLInputElement | null>(null);
+	const imageFile = useRef<HTMLInputElement | null>(null);
 
-	const uploadFile = () => {
-		inputFile.current?.click();
+	const uploadImage = () => {
+		imageFile.current?.click();
 	}
 
-	const handleFile = (event: any) => {
+	const handleImage = (event: any) => {
 		const file = event.target.files[0];
 		const fileReader = new FileReader();
 
@@ -24,7 +24,27 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		}
 	}
 
+	const htmlFile = useRef<HTMLInputElement | null>(null);
+
+	const uploadHtml = () => {
+		htmlFile.current?.click();
+	}
+
+	const handleHtml = (event: any) => {
+		const file = event.target.files[0];
+		const fileReader = new FileReader();
+
+		fileReader.readAsDataURL(file)
+		fileReader.onload = () => {
+			const html = window.atob(fileReader.result?.toString().split(",")[1] ?? "");
+			editor?.commands.setContent(html ?? "<p> unable to import </p>");
+			localStorage.setItem("content", html ?? "<p> unable to import </p>");
+		}
+	}
+
+
 	const sendDocument = () => { };
+
 	const saveHtml = async () => {
 		const rawHtml = editor?.getHTML();
 		var file = new Blob([rawHtml ?? ""], { type: "text/html" });
@@ -33,6 +53,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		await writer.write(file);
 		await writer.close();
 	}
+
 	const redirectToAccount = () => { };
 
 	return (
@@ -77,8 +98,8 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						>
 							&lt;code&gt;
 						</button>
-						<input type="file" id="file" style={{ display: 'none' }} ref={inputFile} accept="image/*" onChange={handleFile} />
-						<button onClick={uploadFile}
+						<input type="file" id="image" style={{ display: 'none' }} ref={imageFile} accept="image/*" onChange={handleImage} />
+						<button onClick={uploadImage}
 							className='border-2 border-stone-300 text-sm'> &lt;img&gt;
 						</button>
 					</div>
@@ -89,9 +110,13 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						</button>
 						<button onClick={saveHtml}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
-							Save Page
+							Save File
 						</button>
-
+						<button onClick={uploadHtml}
+							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
+							Open File
+						</button>
+						<input type="file" id="htmlFile" style={{ display: 'none' }} ref={htmlFile} accept="text/html" onChange={handleHtml} />
 						<button onClick={redirectToAccount}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Account
