@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/react'
 import { useRef } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 
@@ -43,7 +44,21 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	}
 
 
-	const sendDocument = () => { };
+	const sendDocument = async () => {
+		const id = uuidv4();
+		const generatedUrl = window.location.href + "?doc=" + id;
+		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/generate-url", {
+			method: "POST",
+			body: JSON.stringify({ url: generatedUrl, html: editor?.getHTML() }),
+			headers: { 'Content-Type': 'application/json' }
+		});
+		const body = await response.json();
+		if (response.status === 200) {
+			return generatedUrl;
+		} else {
+			return "Unable to generate URL";
+		}
+	};
 
 	const saveHtml = async () => {
 		const rawHtml = editor?.getHTML();
