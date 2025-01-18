@@ -20,7 +20,7 @@ import ImageResize from 'tiptap-extension-resize-image';
 const lowlight = createLowlight(all);
 
 // define your extension array
-const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic, ImageResize,
+export const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic, ImageResize,
 	Image.configure({
 		allowBase64: true,
 		inline: true
@@ -48,7 +48,6 @@ const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bo
 				if (htmlContent) {
 					// if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
 					// you could extract the pasted file from this url string and upload it to a server for example
-					console.log(htmlContent) // eslint-disable-line no-console
 					return false
 				}
 
@@ -87,13 +86,11 @@ const TiptapEditor = () => {
 			},
 		},
 		onUpdate({ editor }) {
-			console.log(editor.getHTML());
 			localStorage.setItem("content", editor.getHTML());
 		},
 	});
 
 	useEffect(() => {
-		console.log("initial", localStorage.getItem("content"));
 		if (localStorage.getItem("content")) {
 			const savedContent = localStorage.getItem("content") ?? content;
 			editor?.commands.setContent(savedContent);

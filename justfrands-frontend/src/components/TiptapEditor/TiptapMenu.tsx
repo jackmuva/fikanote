@@ -1,9 +1,15 @@
 import { Editor } from '@tiptap/react'
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { SendUrlModal } from './SendUrlModal';
+
+type MenuState = {
+	modal: boolean;
+	url: string;
+}
 
 export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
-
+	const [menuState, setMenuState] = useState<MenuState>({ modal: false, url: "" });
 	const imageFile = useRef<HTMLInputElement | null>(null);
 
 	const uploadImage = () => {
@@ -43,21 +49,16 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		}
 	}
 
-
 	const sendDocument = async () => {
 		const id = uuidv4();
-		const generatedUrl = window.location.href + "?doc=" + id;
+		const generatedUrl = window.location.href + "doc/" + id;
 		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/generate-url", {
 			method: "POST",
 			body: JSON.stringify({ url: generatedUrl, html: editor?.getHTML() }),
 			headers: { 'Content-Type': 'application/json' }
 		});
 		const body = await response.json();
-		if (response.status === 200) {
-			return generatedUrl;
-		} else {
-			return "Unable to generate URL";
-		}
+		setMenuState({ modal: true, url: body.url });
 	};
 
 	const saveHtml = async () => {
@@ -70,6 +71,10 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	}
 
 	const redirectToAccount = () => { };
+
+	const toggleSendModal = () => {
+		setMenuState((prev: MenuState) => ({ ...prev, modal: !prev.modal }));
+	};
 
 	return (
 		<div className='bg-white z-10 py-2 px-2 rounded-lg 
@@ -119,6 +124,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						</button>
 					</div>
 					<div className='flex flex-col w-24 space-y-0 border-l-2 px-2 ml-2 border-stone-100'>
+						{menuState.modal && <SendUrlModal toggle={toggleSendModal} url={menuState.url} />}
 						<button onClick={sendDocument}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Send Page
@@ -132,10 +138,10 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 							Open File
 						</button>
 						<input type="file" id="htmlFile" style={{ display: 'none' }} ref={htmlFile} accept="text/html" onChange={handleHtml} />
-						<button onClick={redirectToAccount}
+						{/*<button onClick={redirectToAccount}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Account
-						</button>
+						</button>*/}
 					</div>
 				</div>}
 		</div>
