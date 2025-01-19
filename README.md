@@ -1,2 +1,2 @@
-# justfrands
-An application for more personal web-based mail
+# FikaNote
+Easy and simple way to send and save lightweight letters and documents
