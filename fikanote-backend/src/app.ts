@@ -7,7 +7,15 @@ import pgPromise from 'pg-promise';
 import 'dotenv/config';
 
 const pgp = pgPromise({/* Initialization Options */ });
-const db = pgp(`postgres://${process.env.PG_USERNAME}:${process.env.PG_PASSWORD}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DATABASE}`);
+const pgConf = {
+	user: process.env.PG_USERNAME ?? "",
+	password: process.env.PG_PASSWORD ?? "",
+	host: process.env.PG_HOST ?? "",
+	port: Number(process.env.PG_PORT),
+	database: process.env.PG_DATABASE,
+	sslMode: 'disable',
+}
+const db = pgp(pgConf);
 const port = 3000;
 var corsOptions = {
 	origin: process.env.FRONTEND_URL,
@@ -18,13 +26,14 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.get('/', (req: Request, res: Response) => {
-	res.send('JustFrands Backend Healthy!')
+	res.send('FikaNote Backend Healthy!')
 });
 
 app.post('/api/generate-url/', (req: Request, res: Response) => {
 	const body: { url: string, html: string } = req.body;
 	const currentDate = new Date().toUTCString();
 	const id = body.url.split("doc/")[1];
+	console.log(body);
 	db.one(`
 			INSERT INTO GENERATED_URLS VALUES($1, $2, $3, $4) RETURNING *
 		`, [id, body.url, body.html, currentDate]).then((returnedUrl) => {
@@ -46,5 +55,5 @@ app.get('/api/get-url/:urlId', (req: Request, res: Response) => {
 
 
 app.listen(port, () => {
-	console.log(`JustFrands backend listening on port ${port}`)
+	console.log(`FikaNote backend listening on port ${port}`)
 })

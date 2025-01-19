@@ -70,7 +70,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		await writer.close();
 	}
 
-	const redirectToAccount = () => { };
+	//	const redirectToAccount = () => { };
 
 	const toggleSendModal = () => {
 		setMenuState((prev: MenuState) => ({ ...prev, modal: !prev.modal }));

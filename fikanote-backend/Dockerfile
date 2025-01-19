@@ -1,5 +1,5 @@
 # Fetching the minified node image on apline linux
-FROM node:slim
+FROM node:20-alpine as build
 
 # Declaring env
 ENV NODE_ENV production
@@ -15,6 +15,7 @@ RUN npm install
 
 # Installing pm2 globally
 RUN npm install pm2 -g
+RUN npm run build
 
 # Starting our application
 CMD pm2 start process.yml && tail -f /dev/null
