@@ -17,7 +17,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
 	res.send('JustFrands Backend Healthy!')
 });
 
@@ -37,7 +37,6 @@ app.post('/api/generate-url/', (req: Request, res: Response) => {
 app.get('/api/get-url/:urlId', (req: Request, res: Response) => {
 	const params = req.params;
 	db.one(`SELECT * FROM GENERATED_URLS WHERE uuid=$1 LIMIT 1`, [params.urlId]).then((returnedUrl) => {
-		console.log(returnedUrl);
 		res.json({ message: "retrieved content", html: returnedUrl.html });
 	}).catch((e) => {
 		res.json({ message: "Unable to retrieve URL", error: e.message });
@@ -47,5 +46,5 @@ app.get('/api/get-url/:urlId', (req: Request, res: Response) => {
 
 
 app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`)
+	console.log(`JustFrands backend listening on port ${port}`)
 })
