@@ -70,7 +70,15 @@ export const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListI
 
 
 const TiptapEditor = () => {
-	const content = `<h2>Start Typing to Begin</h2>
+	const content = `<h2>Welcome to FikaNote</h2>
+			<ul>
+			<li>FikaNote is a lightweight app to write notes, letters, and pages</li>
+					<li>Your page is auto-saved locally on your browser </li>
+					<ul><li>Clearing your browser data will clear your page</li></ul>
+					<li>To save your work, <b>Save File</b> and <b>Open File</b> to pick up where you left off</li>
+				<li><b>Send Page</b> will generate a URL that you can send to others a <b>read-only</b> version of your page</li>
+			</ul>
+			<h3>Clear this page when you're ready to start</h3>
 					<p></p>
 					<p></p>
 					<p></p>

@@ -12,8 +12,9 @@ const pgConf = {
 	password: process.env.PG_PASSWORD ?? "",
 	host: process.env.PG_HOST ?? "",
 	port: Number(process.env.PG_PORT),
-	database: process.env.PG_DATABASE,
-	sslMode: 'disable',
+	ssl: {
+		rejectUnauthorized: false,
+	}
 }
 const db = pgp(pgConf);
 const port = 3000;
