@@ -7,14 +7,16 @@ export const TiptapReader = ({ docId }: { docId: string }) => {
 	const editor = useEditor({
 		extensions,
 		content,
-		editable: false
+		editable: false,
+
 	});
 
 	useEffect(() => {
 		getContent();
-	}, []);
+	}, [editor]);
 
 	const getContent = async () => {
+		if (!editor) console.log('not initialized'); // Ensure editor is initialized
 		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/get-url/" + docId, {
 			method: "GET"
 		});

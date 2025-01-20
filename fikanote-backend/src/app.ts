@@ -7,15 +7,26 @@ import pgPromise from 'pg-promise';
 import 'dotenv/config';
 
 const pgp = pgPromise({/* Initialization Options */ });
-const pgConf = {
-	user: process.env.PG_USERNAME ?? "",
-	password: process.env.PG_PASSWORD ?? "",
-	host: process.env.PG_HOST ?? "",
-	port: Number(process.env.PG_PORT),
-	ssl: {
-		rejectUnauthorized: false,
+let pgConf = {};
+if (process.env.ENVIRON === "PROD") {
+	pgConf = {
+		user: process.env.PG_USERNAME,
+		password: process.env.PG_PASSWORD,
+		host: process.env.PG_HOST,
+		port: process.env.PG_PORT,
+		ssl: {
+			rejectUnauthorized: false,
+		}
+	}
+} else if (process.env.ENVIRON === "DEV") {
+	pgConf = {
+		user: process.env.PG_USERNAME,
+		password: process.env.PG_PASSWORD,
+		host: process.env.PG_HOST,
+		port: process.env.PG_PORT,
 	}
 }
+
 const db = pgp(pgConf);
 const port = 3000;
 var corsOptions = {
