@@ -51,20 +51,55 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 
 	const sendDocument = async () => {
 		const id = uuidv4();
+		const imgOptimizedHtml = await convertImages(editor?.getHTML(), id);
 		const generatedUrl = window.location.href + "doc/" + id;
 		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/generate-url", {
 			method: "POST",
-			body: JSON.stringify({ url: generatedUrl, html: editor?.getHTML() }),
+			body: JSON.stringify({ url: generatedUrl, html: imgOptimizedHtml }),
 			headers: { 'Content-Type': 'application/json' }
 		});
 		const body = await response.json();
 		setMenuState({ modal: true, url: body.url });
 	};
 
+	const convertImages = async (html: string | undefined, docId: string) => {
+		if (html === undefined) {
+			return;
+		}
+
+		const regex = /<img[^>]+src=["']([^"']+)["']/g;
+		const srcList: string[] = [];
+		let match: RegExpExecArray | null;
+		let resultHtml = html;
+
+		// Use regex.exec to capture all matches
+		while ((match = regex.exec(html)) !== null) {
+			srcList.push(match[1]); // Capture group 1 contains the src value
+		}
+
+		for (const base64 of srcList) {
+			const imageUrl = await saveImageToUrl(base64, docId);
+			resultHtml = html.replace(base64, imageUrl);
+		}
+		return resultHtml;
+	}
+
+	const saveImageToUrl = async (base64: string, docId: string): Promise<string> => {
+		const imgId = uuidv4();
+		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/save-image", {
+			method: "POST",
+			body: JSON.stringify({ imgId: imgId, docId: docId, base64: base64 }),
+			headers: { 'Content-Type': 'application/json' }
+		});
+		const body = await response.json();
+		console.log(body);
+		return body.url;
+	}
+
 	const saveHtml = async () => {
 		const rawHtml = editor?.getHTML();
 		var file = new Blob([rawHtml ?? ""], { type: "text/html" });
-		const handle = await showSaveFilePicker({ suggestedName: "just-frands.html" });
+		const handle = await showSaveFilePicker({ suggestedName: "fikanote-file.html" });
 		const writer = await handle.createWritable();
 		await writer.write(file);
 		await writer.close();

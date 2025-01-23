@@ -55,6 +55,18 @@ app.post('/api/generate-url/', (req: Request, res: Response) => {
 	});
 });
 
+app.post('/api/save-image/', (req: Request, res: Response) => {
+	const body: { imgId: string, docId: string, base64: string } = req.body;
+	console.log(body);
+	db.one(`
+			INSERT INTO IMAGE_LOOKUP($1, $2) RETURNING *
+		`, [body.imgId, body.docId]).then((returnedImg) => {
+		res.json({ message: "Successfully saved", imgId: returnedImg.imgId });
+	}).catch((e) => {
+		res.json({ message: "Unable to generate URL for image", error: e.message });
+	});
+});
+
 app.get('/api/get-url/:urlId', (req: Request, res: Response) => {
 	const params = req.params;
 	db.one(`SELECT * FROM GENERATED_URLS WHERE uuid=$1 LIMIT 1`, [params.urlId]).then((returnedUrl) => {
