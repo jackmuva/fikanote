@@ -34,4 +34,11 @@ await pgClient.query(`
 		datetime VARCHAR(255)
 	)`);
 
+await pgClient.query(`
+	CREATE TABLE IF NOT EXISTS IMAGE_LOOKUP(
+		image_uuid VARCHAR(255) PRIMARY KEY,
+		doc_uuid VARCHAR(255)
+	)`);
+
+
 await pgClient.end();

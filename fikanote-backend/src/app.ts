@@ -5,6 +5,7 @@ var app = express();
 const bodyParser = require('body-parser');
 import pgPromise from 'pg-promise';
 import 'dotenv/config';
+import { uploadToS3 } from "./s3/uploadS3";
 
 const pgp = pgPromise({/* Initialization Options */ });
 let pgConf = {};
@@ -58,13 +59,16 @@ app.post('/api/generate-url/', (req: Request, res: Response) => {
 app.post('/api/save-image/', (req: Request, res: Response) => {
 	const body: { imgId: string, docId: string, base64: string } = req.body;
 	console.log(body);
-	db.one(`
-			INSERT INTO IMAGE_LOOKUP($1, $2) RETURNING *
-		`, [body.imgId, body.docId]).then((returnedImg) => {
-		res.json({ message: "Successfully saved", imgId: returnedImg.imgId });
-	}).catch((e) => {
-		res.json({ message: "Unable to generate URL for image", error: e.message });
-	});
+	db.one(`INSERT INTO IMAGE_LOOKUP($1, $2) RETURNING *`,
+		[body.imgId, body.docId]).then((returnedImg) => {
+			uploadToS3(body.base64, body.imgId).then((message) => {
+				res.json({ message: message.message, location: message.data, imgInfo: returnedImg });
+			}).catch((e) => {
+				res.json({ message: "Unable to upload to S3", error: e.message });
+			});
+		}).catch((e) => {
+			res.json({ message: "Unable to generate URL for image", error: e.message });
+		});
 });
 
 app.get('/api/get-url/:urlId', (req: Request, res: Response) => {

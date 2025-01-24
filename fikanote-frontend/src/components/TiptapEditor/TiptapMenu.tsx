@@ -63,6 +63,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	};
 
 	const convertImages = async (html: string | undefined, docId: string) => {
+		console.log(html);
 		if (html === undefined) {
 			return;
 		}
