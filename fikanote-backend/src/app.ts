@@ -6,7 +6,9 @@ const bodyParser = require('body-parser');
 import pgPromise from 'pg-promise';
 import 'dotenv/config';
 import { uploadToS3 } from "./s3/uploadS3";
+const multer = require('multer');
 
+//DB Configs
 const pgp = pgPromise({/* Initialization Options */ });
 let pgConf = {};
 if (process.env.ENVIRON === "PROD") {
@@ -35,8 +37,13 @@ var corsOptions = {
 	optionsSuccessStatus: 200
 }
 
+//Sets up express middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+const upload = multer({
+	limits: { fieldSize: 25 * 1024 * 1024 }
+})
 
 app.get('/', (req: Request, res: Response) => {
 	res.send('FikaNote Backend Healthy!')
@@ -46,7 +53,6 @@ app.post('/api/generate-url/', (req: Request, res: Response) => {
 	const body: { url: string, html: string } = req.body;
 	const currentDate = new Date().toUTCString();
 	const id = body.url.split("doc/")[1];
-	console.log(body);
 	db.one(`
 			INSERT INTO GENERATED_URLS VALUES($1, $2, $3, $4) RETURNING *
 		`, [id, body.url, body.html, currentDate]).then((returnedUrl) => {
@@ -56,10 +62,9 @@ app.post('/api/generate-url/', (req: Request, res: Response) => {
 	});
 });
 
-app.post('/api/save-image/', (req: Request, res: Response) => {
-	const body: { imgId: string, docId: string, base64: string } = req.body;
-	console.log(body);
-	db.one(`INSERT INTO IMAGE_LOOKUP($1, $2) RETURNING *`,
+app.post('/api/save-image/', upload.none(), (req: Request, res: Response) => {
+	const body = req.body;
+	db.one(`INSERT INTO IMAGE_LOOKUP(image_uuid, doc_uuid) VALUES ($1, $2) RETURNING *`,
 		[body.imgId, body.docId]).then((returnedImg) => {
 			uploadToS3(body.base64, body.imgId).then((message) => {
 				res.json({ message: message.message, location: message.data, imgInfo: returnedImg });

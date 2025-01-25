@@ -63,7 +63,6 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	};
 
 	const convertImages = async (html: string | undefined, docId: string) => {
-		console.log(html);
 		if (html === undefined) {
 			return;
 		}
@@ -80,21 +79,25 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 
 		for (const base64 of srcList) {
 			const imageUrl = await saveImageToUrl(base64, docId);
-			resultHtml = html.replace(base64, imageUrl);
+			console.log(imageUrl);
+			resultHtml = resultHtml.replace(base64, imageUrl);
 		}
+		console.log(resultHtml);
 		return resultHtml;
 	}
 
 	const saveImageToUrl = async (base64: string, docId: string): Promise<string> => {
 		const imgId = uuidv4();
+		const formData = new FormData();
+		formData.append("base64", base64);
+		formData.append("imgId", imgId);
+		formData.append("docId", docId);
 		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/save-image", {
 			method: "POST",
-			body: JSON.stringify({ imgId: imgId, docId: docId, base64: base64 }),
-			headers: { 'Content-Type': 'application/json' }
+			body: formData,
 		});
 		const body = await response.json();
-		console.log(body);
-		return body.url;
+		return body.location;
 	}
 
 	const saveHtml = async () => {
@@ -105,8 +108,6 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		await writer.write(file);
 		await writer.close();
 	}
-
-	//	const redirectToAccount = () => { };
 
 	const toggleSendModal = () => {
 		setMenuState((prev: MenuState) => ({ ...prev, modal: !prev.modal }));
@@ -174,10 +175,6 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 							Open File
 						</button>
 						<input type="file" id="htmlFile" style={{ display: 'none' }} ref={htmlFile} accept="text/html" onChange={handleHtml} />
-						{/*<button onClick={redirectToAccount}
-							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
-							Account
-						</button>*/}
 					</div>
 				</div>}
 		</div>
