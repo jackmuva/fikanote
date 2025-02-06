@@ -48,10 +48,6 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		}
 	}
 
-
-
-
-
 	const saveHtml = async () => {
 		const rawHtml = editor?.getHTML();
 		var file = new Blob([rawHtml ?? ""], { type: "text/html" });

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { extensions } from "../TiptapEditor/TiptapEditor";
+import { ReaderMenu } from "./ReaderMenu";
 
 export const TiptapReader = ({ docId }: { docId: string }) => {
 	const content = "<p> Loading... </p>";
@@ -16,7 +17,7 @@ export const TiptapReader = ({ docId }: { docId: string }) => {
 	}, [editor]);
 
 	const getContent = async () => {
-		if (!editor) console.log('not initialized'); // Ensure editor is initialized
+		if (!editor) console.log('not initialized');
 		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/get-url/" + docId, {
 			method: "GET"
 		});
@@ -28,6 +29,7 @@ export const TiptapReader = ({ docId }: { docId: string }) => {
 	return (
 		<div className={"w-full h-full text-left text-black "}>
 			<EditorContent className='bg-stone-100 p-4 rounded-lg mt-8 h-fit min-h-96' editor={editor} />
+			<ReaderMenu editor={editor} />
 		</div>
 	);
 };
