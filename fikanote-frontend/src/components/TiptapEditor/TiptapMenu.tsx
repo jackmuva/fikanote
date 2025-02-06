@@ -62,6 +62,18 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		setMenuState({ modal: true, url: body.url });
 	};
 
+	function isValidHttpUrl(str: string) {
+		let url;
+
+		try {
+			url = new URL(str);
+		} catch (_) {
+			return false;
+		}
+
+		return url.protocol === "http:" || url.protocol === "https:";
+	}
+
 	const convertImages = async (html: string | undefined, docId: string) => {
 		if (html === undefined) {
 			return;
@@ -78,11 +90,11 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		}
 
 		for (const base64 of srcList) {
-			const imageUrl = await saveImageToUrl(base64, docId);
-			console.log(imageUrl);
-			resultHtml = resultHtml.replace(base64, imageUrl);
+			if (!isValidHttpUrl(base64)) {
+				const imageUrl = await saveImageToUrl(base64, docId);
+				resultHtml = resultHtml.replace(base64, imageUrl);
+			}
 		}
-		console.log(resultHtml);
 		return resultHtml;
 	}
 
@@ -107,6 +119,19 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		const writer = await handle.createWritable();
 		await writer.write(file);
 		await writer.close();
+	}
+
+	function download() {
+		const rawHtml = editor?.getHTML();
+		const file = new File([rawHtml ?? ""], 'fikanote.html', { type: 'text/html' })
+		const link = document.createElement('a')
+		const url = URL.createObjectURL(file)
+		link.href = url
+		link.download = file.name
+		document.body.appendChild(link)
+		link.click()
+		document.body.removeChild(link)
+		window.URL.revokeObjectURL(url)
 	}
 
 	const toggleSendModal = () => {
@@ -167,9 +192,14 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 							Send Page
 						</button>
 						<button onClick={saveHtml}
-							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
+							className='hidden md:block py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Save File
 						</button>
+						<button onClick={download}
+							className='md:hidden py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
+							Save File
+						</button>
+
 						<button onClick={uploadHtml}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Open File
