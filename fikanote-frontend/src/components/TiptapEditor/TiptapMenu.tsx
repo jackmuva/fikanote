@@ -1,6 +1,5 @@
 import { Editor } from '@tiptap/react'
 import { useRef, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { SendUrlModal } from './SendUrlModal';
 
 type MenuState = {
@@ -49,68 +48,9 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 		}
 	}
 
-	const sendDocument = async () => {
-		const id = uuidv4();
-		const imgOptimizedHtml = await convertImages(editor?.getHTML(), id);
-		const generatedUrl = window.location.href + "doc/" + id;
-		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/generate-url", {
-			method: "POST",
-			body: JSON.stringify({ url: generatedUrl, html: imgOptimizedHtml }),
-			headers: { 'Content-Type': 'application/json' }
-		});
-		const body = await response.json();
-		setMenuState({ modal: true, url: body.url });
-	};
 
-	function isValidHttpUrl(str: string) {
-		let url;
 
-		try {
-			url = new URL(str);
-		} catch (_) {
-			return false;
-		}
 
-		return url.protocol === "http:" || url.protocol === "https:";
-	}
-
-	const convertImages = async (html: string | undefined, docId: string) => {
-		if (html === undefined) {
-			return;
-		}
-
-		const regex = /<img[^>]+src=["']([^"']+)["']/g;
-		const srcList: string[] = [];
-		let match: RegExpExecArray | null;
-		let resultHtml = html;
-
-		// Use regex.exec to capture all matches
-		while ((match = regex.exec(html)) !== null) {
-			srcList.push(match[1]); // Capture group 1 contains the src value
-		}
-
-		for (const base64 of srcList) {
-			if (!isValidHttpUrl(base64)) {
-				const imageUrl = await saveImageToUrl(base64, docId);
-				resultHtml = resultHtml.replace(base64, imageUrl);
-			}
-		}
-		return resultHtml;
-	}
-
-	const saveImageToUrl = async (base64: string, docId: string): Promise<string> => {
-		const imgId = uuidv4();
-		const formData = new FormData();
-		formData.append("base64", base64);
-		formData.append("imgId", imgId);
-		formData.append("docId", docId);
-		const response = await fetch(import.meta.env.VITE_BACKEND + "/api/save-image", {
-			method: "POST",
-			body: formData,
-		});
-		const body = await response.json();
-		return body.location;
-	}
 
 	const saveHtml = async () => {
 		const rawHtml = editor?.getHTML();
@@ -186,8 +126,8 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						</button>
 					</div>
 					<div className='flex flex-col w-24 space-y-0 border-l-2 px-2 ml-2 border-stone-100'>
-						{menuState.modal && <SendUrlModal toggle={toggleSendModal} url={menuState.url} />}
-						<button onClick={sendDocument}
+						{menuState.modal && <SendUrlModal toggle={toggleSendModal} editor={editor} />}
+						<button onClick={toggleSendModal}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Send Page
 						</button>
