@@ -17,11 +17,12 @@ import Bold from '@tiptap/extension-bold';
 import Italic from '@tiptap/extension-italic';
 import ImageResize from 'tiptap-extension-resize-image';
 import Link from '@tiptap/extension-link'
+import History from '@tiptap/extension-history'
 
 const lowlight = createLowlight(common);
 
 // define your extension array
-export const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic, ImageResize,
+export const extensions = [Document, Paragraph, Text, Youtube, BulletList, ListItem, Bold, Italic, ImageResize, History,
 	Link.configure({
 		openOnClick: true,
 		autolink: true,
