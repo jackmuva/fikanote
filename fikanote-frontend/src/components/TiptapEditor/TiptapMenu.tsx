@@ -1,14 +1,16 @@
 import { Editor } from '@tiptap/react'
 import { useRef, useState } from 'react';
-import { SendUrlModal } from './SendUrlModal';
+import { SendUrlModal } from './Modals/SendUrlModal';
+import { CodeBlockModal } from './Modals/CodeBlockModal';
 
 type MenuState = {
-	modal: boolean;
+	sendModal: boolean;
+	codeModal: boolean;
 	url: string;
 }
 
 export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
-	const [menuState, setMenuState] = useState<MenuState>({ modal: false, url: "" });
+	const [menuState, setMenuState] = useState<MenuState>({ codeModal: false, sendModal: false, url: "" });
 	const imageFile = useRef<HTMLInputElement | null>(null);
 
 	const uploadImage = () => {
@@ -71,7 +73,11 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 	}
 
 	const toggleSendModal = () => {
-		setMenuState((prev: MenuState) => ({ ...prev, modal: !prev.modal }));
+		setMenuState((prev: MenuState) => ({ ...prev, sendModal: !prev.sendModal }));
+	};
+
+	const toggleCodeModal = () => {
+		setMenuState((prev: MenuState) => ({ ...prev, codeModal: !prev.codeModal }));
 	};
 
 	return (
@@ -109,11 +115,12 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 							&lt;ul&gt;
 						</button>
 						<button onClick={editor.isActive('codeBlock') ? () => editor.chain().focus().toggleCodeBlock().run() :
-							() => editor.chain().focus().setCodeBlock().run()}
+							() => toggleCodeModal()}
 							className={editor.isActive('codeBlock') ?
 								'font-bold bg-purple-100 border-2 border-purple-700 text-sm' :
 								'border-2 border-stone-300 text-sm'}
 						>
+							{menuState.codeModal && <CodeBlockModal editor={editor} />}
 							&lt;code&gt;
 						</button>
 						<input type="file" id="image" style={{ display: 'none' }} ref={imageFile} accept="image/*" onChange={handleImage} />
@@ -122,7 +129,7 @@ export const TiptapMenu = ({ editor }: { editor: Editor | null }) => {
 						</button>
 					</div>
 					<div className='flex flex-col w-24 space-y-0 border-l-2 px-2 ml-2 border-stone-100'>
-						{menuState.modal && <SendUrlModal toggle={toggleSendModal} editor={editor} />}
+						{menuState.sendModal && <SendUrlModal toggle={toggleSendModal} editor={editor} />}
 						<button onClick={toggleSendModal}
 							className='py-1 px-0 rounded-none border-b-1 border-b-stone-200 bg-inherit hover:-translate-y-0.5 text-xs font-bold'>
 							Send Page
